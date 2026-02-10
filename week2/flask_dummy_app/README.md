@@ -4,6 +4,7 @@ Minimal static site served by a tiny Flask app.
 
 To run the app with with unicorn and expose , just run the script appstart.sh
 
+When running with nginx proxy untance on port 443 a certificate is needed.
 
 # to decrypt the private key 
 
