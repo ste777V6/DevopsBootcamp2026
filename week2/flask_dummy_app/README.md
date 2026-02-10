@@ -2,7 +2,7 @@
 
 Minimal static site served by a tiny Flask app.
 
-To run the app with with unicorn and expose , just run the scr
+To run the app with with unicorn and expose , just run the script appstart.sh
 
 
 # to decrypt the private key 
