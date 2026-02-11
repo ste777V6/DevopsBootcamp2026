@@ -11,4 +11,4 @@ pip install -r requirements.txt
 gunicorn -w 4 -b 0.0.0.0:8000 app:app &
 
 # run nginx
-nginx -g "daemon off;"
+#nginx -g "daemon off;"
