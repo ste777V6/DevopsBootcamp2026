@@ -15,6 +15,6 @@ git clone https://github.com/ste777V6/DevopsBootcamp2026.git
 cd DevopsBootcamp2026.git/week3/day1/app
 
 # Make script executable and run
-chmod u+x run.sh
+sudo chmod u+x run.sh
 ./run.sh
 #Important: No Nginx needed! ALB handles reverse proxy.
