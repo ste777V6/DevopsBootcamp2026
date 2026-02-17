@@ -16,6 +16,12 @@ Created load balancer configured listener port 80 and after creating certificate
 
 <img width="677" height="199" alt="image" src="https://github.com/user-attachments/assets/85986ff2-c51b-450e-a245-964008082e0a" />
 
+Load balancer is creating two additional static IP - Elastic IP and url
+
+<img width="531" height="138" alt="image" src="https://github.com/user-attachments/assets/c419b18c-d1b3-4fcb-86a1-79fd0346ee91" />
+
+ste-alb-1455776424.us-east-1.elb.amazonaws.com
+
 Attached Autoscaling group to load balancer
 
 <img width="887" height="251" alt="image" src="https://github.com/user-attachments/assets/6060227a-c7ee-48cc-9416-7f7afb065241" />
