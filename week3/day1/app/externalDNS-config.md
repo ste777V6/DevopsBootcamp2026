@@ -45,7 +45,10 @@ To have certificate validates need to create a CNAME record in DNS Provider:
 
 and finally is “Issued”:
 
-	![Uploading image.png…]()
+<img width="879" height="158" alt="image" src="https://github.com/user-attachments/assets/56cf9ed3-09ca-45d6-9ed8-4f71d7cf5bcb" />
+
+
+
 
 
 
