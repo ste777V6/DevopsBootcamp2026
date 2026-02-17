@@ -18,5 +18,7 @@ Created load balancer configured listener port 80 and after creating certificate
 
 Attached Autoscaling group to load balancer
 
+<img width="887" height="251" alt="image" src="https://github.com/user-attachments/assets/6060227a-c7ee-48cc-9416-7f7afb065241" />
+
 
 
