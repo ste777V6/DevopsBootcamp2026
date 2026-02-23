@@ -1,54 +1,172 @@
-from flask import Flask, render_template_string, request, redirect
-from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
+from flask import Flask, render_template_string, request, redirect, url_for, flash
 import os
-
-load_dotenv()
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USER', 'postgres')}:{os.getenv('DB_PASSWORD', 'postgres')}@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME', 'testdb')}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app.static_folder = 'static'
+app.secret_key = os.environ.get('FLASK_SECRET', 'devopsbootcampdev')
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
 
-TEMPLATE = '''
-<!DOCTYPE html>
-<html><head><title>Simple App</title></head>
-<body style="font-family: Arial; max-width: 600px; margin: 50px auto;">
-    <h1>User Registration</h1>
-    <form method="POST">
-        <input type="text" name="name" placeholder="Name" required style="padding: 8px; margin: 5px; width: 200px;"><br>
-        <input type="email" name="email" placeholder="Email" required style="padding: 8px; margin: 5px; width: 200px;"><br>
-        <button type="submit" style="padding: 10px 20px; margin: 5px;">Submit</button>
+# Database helpers - configure via environment variables
+DB_CONFIG = {
+        'host': os.environ.get('DB_HOST', 'localhost'),
+        'port': int(os.environ.get('DB_PORT', 5432)),
+        'dbname': os.environ.get('DB_NAME', 'devopsbootcamp'),
+        'user': os.environ.get('DB_USER', 'postgres'),
+        'password': os.environ.get('DB_PASSWORD', ''),
+}
+
+
+def get_conn():
+        return psycopg2.connect(**DB_CONFIG)
+
+
+def init_db():
+        try:
+                conn = get_conn()
+                cur = conn.cursor()
+                cur.execute(
+                        """
+                        CREATE TABLE IF NOT EXISTS students (
+                                id SERIAL PRIMARY KEY,
+                                name TEXT NOT NULL,
+                                country TEXT NOT NULL,
+                                created_at TIMESTAMP DEFAULT now()
+                        )
+                        """
+                )
+                conn.commit()
+                cur.close()
+                conn.close()
+        except Exception:
+                # If DB isn't available at startup, we'll surface errors during requests.
+                pass
+
+
+BASE_TEMPLATE = """
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Week3 Day2</title>
+        <style>
+            body { font-family: Arial, Helvetica, sans-serif; margin:0; background:#f6f8fb; color:#0b1220 }
+            header { background:#0f172a; color:#fff; padding:12px 20px }
+            nav { max-width:900px; margin:0 auto; display:flex; gap:12px }
+            nav a { color:#94a3b8; text-decoration:none; padding:8px 12px }
+            nav a:hover { color:#fff }
+            main { max-width:900px; margin:28px auto; padding:0 20px }
+            .card { background:#fff; border-radius:8px; padding:18px; box-shadow:0 6px 18px rgba(2,6,23,0.08) }
+            table { width:100%; border-collapse:collapse; margin-bottom:16px }
+            th, td { text-align:left; padding:8px; border-bottom:1px solid #eef2f7 }
+            form { display:flex; gap:8px; flex-wrap:wrap; align-items:center }
+            input[type=text] { padding:8px 10px; border:1px solid #dbe7f0; border-radius:6px; flex:1 }
+            button { padding:9px 14px; background:#0f172a; color:#fff; border:none; border-radius:6px }
+            .flash { padding:10px; border-radius:6px; margin-bottom:12px }
+            .flash.success { background:#ecfdf5; color:#065f46 }
+            .flash.error { background:#ffebee; color:#7f1d1d }
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/students">Students</a>
+            </nav>
+        </header>
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for cat, msg in messages %}
+                        <div class="flash {{ 'success' if cat == 'success' else 'error' }}">{{ msg }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {{ body|safe }}
+        </main>
+    </body>
+</html>
+"""
+
+
+STUDENTS_BODY = """
+<div class="card">
+    <h3>Students</h3>
+    {% if students and students|length > 0 %}
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Country</th><th>Added</th></tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                    <tr>
+                        <td>{{ s.id }}</td>
+                        <td>{{ s.name }}</td>
+                        <td>{{ s.country }}</td>
+                        <td>{{ s.created_at }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No students yet.</p>
+    {% endif %}
+
+    <h4>Add student</h4>
+    <form method="post" action="/students">
+        <input type="text" name="name" placeholder="Student name" required>
+        <input type="text" name="country" placeholder="Country" required>
+        <button type="submit">Submit</button>
     </form>
-    <h2>Users ({{ users|length }})</h2>
-    <table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%;">
-        <tr><th>ID</th><th>Name</th><th>Email</th></tr>
-        {% for user in users %}
-        <tr><td>{{ user.id }}</td><td>{{ user.name }}</td><td>{{ user.email }}</td></tr>
-        {% endfor %}
-    </table>
-</body></html>
-'''
+</div>
+"""
 
-@app.route('/', methods=['GET', 'POST'])
+
+@app.route('/')
 def index():
-    if request.method == 'POST':
-        user = User(name=request.form['name'], email=request.form['email'])
-        db.session.add(user)
-        db.session.commit()
-        return redirect('/')
-    users = User.query.all()
-    return render_template_string(TEMPLATE, users=users)
+        body = '<div class="card"><h2>Welcome</h2><p>Use the navigation to manage students.</p></div>'
+        return render_template_string(BASE_TEMPLATE, body=body)
 
-# Create tables before first request
-with app.app_context():
-    db.create_all()
-    print("✓ Database tables created")
+
+@app.route('/students', methods=['GET', 'POST'])
+def students():
+        if request.method == 'POST':
+                name = (request.form.get('name') or '').strip()
+                country = (request.form.get('country') or '').strip()
+                if not name or not country:
+                        flash('Name and country are required.', 'error')
+                        return redirect(url_for('students'))
+                try:
+                        conn = get_conn()
+                        cur = conn.cursor()
+                        cur.execute('INSERT INTO students (name, country) VALUES (%s, %s)', (name, country))
+                        conn.commit()
+                        cur.close()
+                        conn.close()
+                        flash('Student saved.', 'success')
+                except Exception as e:
+                        flash(f'Database error: {e}', 'error')
+                return redirect(url_for('students'))
+
+        # GET: fetch students
+        students_data = []
+        try:
+                conn = get_conn()
+                cur = conn.cursor(cursor_factory=RealDictCursor)
+                cur.execute('SELECT id, name, country, created_at FROM students ORDER BY id DESC')
+                students_data = cur.fetchall()
+                cur.close()
+                conn.close()
+        except Exception as e:
+                # show error as flash but still render page
+                flash(f'Could not read students from DB: {e}', 'error')
+
+        body = render_template_string(STUDENTS_BODY, students=students_data)
+        return render_template_string(BASE_TEMPLATE, body=body)
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+        init_db()
+        app.run(debug=True, host='0.0.0.0', port=5000)
