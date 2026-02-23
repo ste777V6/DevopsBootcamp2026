@@ -1,20 +1,24 @@
 from flask import Flask, render_template_string, request, redirect, url_for, flash
 import os
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
+
 app = Flask(__name__)
 app.static_folder = 'static'
-app.secret_key = os.environ.get('FLASK_SECRET', 'devopsbootcampdev')
+# prefer a value from .env; fall back to a placeholder to avoid runtime errors
+app.secret_key = os.environ.get('FLASK_SECRET') or 'devopsbootcampdev'
 
 
 # Database helpers - configure via environment variables
 DB_CONFIG = {
-        'host': os.environ.get('DB_HOST', 'localhost'),
-        'port': int(os.environ.get('DB_PORT', 5432)),
-        'dbname': os.environ.get('DB_NAME', 'devopsbootcamp'),
-        'user': os.environ.get('DB_USER', 'postgres'),
-        'password': os.environ.get('DB_PASSWORD', ''),
+    'host': os.environ.get('DB_HOST'),
+    'port': int(os.environ.get('DB_PORT', 5432)),
+    'dbname': os.environ.get('DB_NAME'),
+    'user': os.environ.get('DB_USER'),
+    'password': os.environ.get('DB_PASSWORD'),
 }
 
 
