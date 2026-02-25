@@ -12,7 +12,7 @@ cd /home/ec2-user
 git clone https://github.com/ste777V6/DevopsBootcamp2026.git
 
 # Navigate to app directory
-cd DevopsBootcamp2026.git/week3/day1/app
+cd DevopsBootcamp2026.git/week3/day2/app
 
 # Make script executable and run
 sudo chmod u+x run.sh
