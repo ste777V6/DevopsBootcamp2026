@@ -1,7 +1,11 @@
 from flask import Flask, render_template_string, request, redirect, url_for, flash
 import os
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2.extras import RealDictCursor
+
+# load .env located next to this file (overrides environment when present)
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
 
 app = Flask(__name__)
 app.static_folder = 'static'
@@ -23,25 +27,36 @@ def get_conn():
 
 
 def init_db():
-        try:
-                conn = get_conn()
-                cur = conn.cursor()
-                cur.execute(
-                        """
-                        CREATE TABLE IF NOT EXISTS students (
-                                id SERIAL PRIMARY KEY,
-                                name TEXT NOT NULL,
-                                country TEXT NOT NULL,
-                                created_at TIMESTAMP DEFAULT now()
-                        )
-                        """
-                )
-                conn.commit()
-                cur.close()
-                conn.close()
-        except Exception:
-                # If DB isn't available at startup, we'll surface errors during requests.
-                pass
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS students (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                country TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT now()
+            )
+            """
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        # Fail fast: if we cannot create the required table, raise
+        # an exception so the process doesn't start without DB ready.
+        print(f"init_db: could not create table: {e}")
+        raise
+
+
+# Ensure DB table exists before application startup (WSGI imports the module)
+try:
+    init_db()
+except Exception as e:
+    print(f"Fatal: database initialization failed: {e}")
+    # Re-raise to prevent the app from starting in an invalid state
+    raise
 
 
 BASE_TEMPLATE = """
