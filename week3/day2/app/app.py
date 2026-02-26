@@ -30,22 +30,47 @@ def init_db():
     try:
         conn = get_conn()
         cur = conn.cursor()
-        cur.execute(
-            """
-            CREATE TABLE IF NOT EXISTS students (
-                id SERIAL PRIMARY KEY,
-                name TEXT NOT NULL,
-                country TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT now()
+        # Attempt to create table; concurrent creates can race and cause
+        # duplicate-object errors (sequence/type already exists). Treat
+        # those specific errors as non-fatal so multiple workers can start.
+        try:
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS students (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    country TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT now()
+                )
+                """
             )
-            """
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
+            conn.commit()
+        except Exception as e:
+            # If another process created parts of the table concurrently,
+            # Postgres can raise UniqueViolation for sequences/types.
+            # Ignore those and proceed; re-raise other errors.
+            try:
+                import psycopg2
+                if isinstance(e, psycopg2.errors.UniqueViolation) or 'already exists' in str(e):
+                    print(f"init_db: concurrent create detected, continuing: {e}")
+                    conn.rollback()
+                else:
+                    raise
+            except ImportError:
+                # If psycopg2.errors isn't available for some reason, fall
+                # back to checking message text.
+                if 'already exists' in str(e):
+                    print(f"init_db: concurrent create detected, continuing: {e}")
+                    conn.rollback()
+                else:
+                    raise
+        finally:
+            cur.close()
+            conn.close()
     except Exception as e:
-        # Fail fast: if we cannot create the required table, raise
-        # an exception so the process doesn't start without DB ready.
+        # Fail fast: if we cannot create the required table (and it's not
+        # a harmless 'already exists' situation), raise so the process
+        # doesn't start without DB ready.
         print(f"init_db: could not create table: {e}")
         raise
 
