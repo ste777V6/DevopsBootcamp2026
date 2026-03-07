@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#install pip
+sudo yum install python3 python3-pip -y
 
 # create a virtual environment
 python3 -m venv .venv
