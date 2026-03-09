@@ -7,7 +7,7 @@ Tis week will be about docker and how to run a container in ECS with ECR
 
 docker build -t app .
 
-docker images
+docker images ls
 
 
 4)Run the image in a container
@@ -24,8 +24,8 @@ $ docker exec
 
 5) Tag the app and push to Github
 
-docker tag app dockprojects123/jan26:1.0
+docker tag app dockprojects123/app:1.0
 
 docker login -u dockprojects123
 
-docker push dockprojects123/jan26:1.0
+docker push dockprojects123/app:1.0
