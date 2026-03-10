@@ -1,0 +1,39 @@
+# run 2 services 
+# 1. web: flask
+# 2. db: postgres
+# first postgres, then flask
+
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - week4day2
+
+  web:
+    build: .
+    ports:
+      - "8000:5000"
+    environment:
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_NAME: mydb
+      DB_HOST: localhost
+    networks:
+      - week4day2
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+
+networks:
+  week4day2:
