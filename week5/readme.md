@@ -22,4 +22,4 @@
      - 1 zone for free , 2 zones for DEV second instance read-only
 
    3) Store the string to access the DB into Secret Manager
-       
+       DB_LINK = = "postgresql://myuser:mypassword@localhost:5432/mydatabase"
