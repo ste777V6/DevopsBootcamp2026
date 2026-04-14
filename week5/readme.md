@@ -2,7 +2,9 @@
 
 -Database will be POstgres SQL on AWS ( not a container)
 -Use student-portal-forECS from week 4 day 2
--need to connect using the string (uncomment it) app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://myuser:mypassword@localhost:5432/mydatabase"
+-need to connect using the string (uncomment it) app.config
+
+
 
 1) build the network part
      - 2x Private subnet for DB ( 2 zones)
