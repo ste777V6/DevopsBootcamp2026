@@ -1,9 +1,9 @@
 ## ECS with 2 tier app - RDS Db - Postgres Sql
 
+Notes:
 -Database will be POstgres SQL on AWS ( not a container)
 -Use student-portal-forECS from week 4 day 2
--need to connect using the string (uncomment it) app.config
-
+-Will not include the credential into source code (BAD practicse). We will pass the DB credential via ENV from Clud secret manager  
 
 
 1) build the network part
@@ -23,3 +23,10 @@
 
    3) Store the string to access the DB into Secret Manager
        DB_LINK = = "postgresql://myuser:mypassword@localhost:5432/mydatabase"
+    
+    4) If don't have create a IAM user with permission only for pushing the image into ECR
+
+    5) Build the app from week4/day2/student-portal and tag it for ECR
+        docker build -t 344707019777.dkr.ecr.us-east-1.amazonaws.com/dev/studentportal .
+    
+    6) Push the image into ECR
