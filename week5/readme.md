@@ -29,4 +29,20 @@ Notes:
     5) Build the app from week4/day2/student-portal and tag it for ECR
         docker build -t 344707019777.dkr.ecr.us-east-1.amazonaws.com/dev/studentportal .
     
-    6) Push the image into ECR
+    6) Login and  Push the image into ECR
+
+
+      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 344707019777.dkr.ecr.us-east-1.amazonaws.com
+
+    docker push 344707019777.dkr.ecr.us-east-1.amazonaws.com/dev/studentportal:latest
+
+7) Create ECS Cluster
+
+8) Create ECS TAsk definition with 
+
+    Task Role (custom) :student-app-Secret-Reader (retrieve Env from secret manager)
+    TAskExecution Role : ecs-TaskExecutionRole (pulls image from container)
+    Environment variable :
+    DB_LINK = value from ( arn:aws:secretsmanager:us-east-1:344707019777:secret:dev/student-portal-ibr8hm) 
+
+    
