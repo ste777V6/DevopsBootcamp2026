@@ -16,6 +16,10 @@
          -https/http to lb
          -port 5000 to app on ECS
          -port xxxx to Postgres DB
+  
   2) Create Postgres DB
      - Free or Dev
      - 1 zone for free , 2 zones for DEV second instance read-only
+
+   3) Store the string to access the DB into Secret Manager
+       
