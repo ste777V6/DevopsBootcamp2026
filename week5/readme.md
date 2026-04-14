@@ -1,8 +1,9 @@
 ## ECS with 2 tier app - RDS Db - Postgres Sql
 
 -Database will be POstgres SQL on AWS ( not a container)
--Use student-app from week 4 day 2
+-Use student-portal-forECS from week 4 day 2
 -need to connect using the string (uncomment it) app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://myuser:mypassword@localhost:5432/mydatabase"
+
 1) build the network part
      - 2x Private subnet for DB ( 2 zones)
      - 2x Private subnets for app
