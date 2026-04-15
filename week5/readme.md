@@ -45,4 +45,47 @@ Notes:
     Environment variable :
     DB_LINK = value from ( arn:aws:secretsmanager:us-east-1:344707019777:secret:dev/student-portal-ibr8hm) 
 
+
+ISSUES (tasks not starting):
+
+1) Issue Task stopped at: 2026-04-15T12:20:50.259Z
+ResourceInitializationError: unable to pull secrets or registry auth: unable to retrieve secret from asm: There is a connection issue between the task and AWS Secrets Manager. Check your task network configuration. failed to fetch secret arn:aws:secretsmanager:us-east-1:344707019777:secret:dev/student-portal-ibr8hm from secrets manager: operation error Secrets Manager: GetSecretValue, https response error StatusCode: 0, RequestID: , canceled, context deadline exceeded
+
+    -missing NAT gateway - must be  ublic subnet - Allow private subnet to use internet gateway
+    -missing default route 0.0.0.0/0 on private route table - must point to NAT GAteway
+    -missing -AWSSecretsManagerClientReadOnlyAccess- policy in ecsTaskExecutionRole
+
+2)  Task stopped at: 2026-04-15T12:31:41.532Z
+Essential container in task exited
+1 essential container exited
+[student-app] Exit code: 1.
+
+
+The error sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL means the application is receiving the DB_LINK value, but it is not a valid connection string format.
     
+Solution:
+Fixed string in Secret manager
+
+ postgresql://myuser:mypassword@student-app-db.cu3wwe2iw53s.us-east-1.rds.amazonaws.com:5432/mydb
+
+
+3) Task stopped at: 2026-04-15T13:20:50.961Z
+Essential container in task exited
+1 essential container exited
+[student-app] Exit code: 1.
+
+The error has changed to psycopg2.OperationalError: connection to server... failed: Connection timed out. This means your application is now correctly parsing the secret, but it cannot reach the database over the network.
+
+solution :
+Check the connection to database - I was missing rule to allow inbound 5432 postgres in the security group for DB
+
+4) Task is stopping
+Task failed ELB health checks in (target-group arn:aws:elasticloadbalancing:us-east-1:344707019777:targetgroup/student-app-new-tg/758f2004e4a89e95)
+
+
+
+Solution : update the app creating a specific healt route:
+
+@bp.route("/health")
+def health_check():
+    return "OK", 200

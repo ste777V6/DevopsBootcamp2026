@@ -191,3 +191,7 @@ def edit_class(id):
             flash("Error updating class.", "error")
 
     return render_template("edit_class.html", class_obj=class_obj)
+
+@bp.route("/health")
+def health_check():
+    return "OK", 200
