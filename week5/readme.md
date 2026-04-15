@@ -83,9 +83,17 @@ Check the connection to database - I was missing rule to allow inbound 5432 post
 Task failed ELB health checks in (target-group arn:aws:elasticloadbalancing:us-east-1:344707019777:targetgroup/student-app-new-tg/758f2004e4a89e95)
 
 
+Solution1 : App was listening on port 8000, but LB and security group configured on port 5000.
+            Created new security group, deleted service and recreated with correct values.
 
-Solution : update the app creating a specific healt route:
+
+
+Solution2 (if still fails with 302 error -redirection ): update the app creating a specific healt route:
 
 @bp.route("/health")
 def health_check():
     return "OK", 200
+
+
+5) Load balancer connectivity problem
+ISsue : LBs placed on private subnets, I changed on the two public in teh same VPC 
