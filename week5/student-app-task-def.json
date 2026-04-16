@@ -1,0 +1,59 @@
+{
+    "family": "student-app-task-def",
+    "containerDefinitions": [
+        {
+            "name": "student-app",
+            "image": "344707019777.dkr.ecr.us-east-1.amazonaws.com/dev/studentportal@sha256:e4a420a60d8878bc45245124472326f81b49898970a7138c1e843994260328d8",
+            "cpu": 1024,
+            "memory": 2048,
+            "memoryReservation": 512,
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "hostPort": 8000,
+                    "protocol": "tcp",
+                    "name": "student-app-8000-tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "DB_LINK",
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:344707019777:secret:dev/student-portal-ibr8hm:DB_LINK::"
+                }
+            ],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/student-app-task-def",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "taskRoleArn": "arn:aws:iam::344707019777:role/student-app-secret-reader",
+    "executionRoleArn": "arn:aws:iam::344707019777:role/service-role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "2048",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "enableFaultInjection": false
+}

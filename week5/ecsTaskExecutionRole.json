@@ -1,0 +1,54 @@
+
+
+//AmazonECSTaskExecutionRolePolicy
+AWS managed
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+//AWSSecretsManagerClientReadOnlyAccess
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "SecretsManagerGetAndDescribeSecret",
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret"
+            ],
+            "Resource": "arn:aws:secretsmanager:*:*:secret:*"
+        },
+        {
+            "Sid": "KMSDecryptKey",
+            "Effect": "Allow",
+            "Action": [
+                "kms:Decrypt"
+            ],
+            "Resource": "arn:aws:kms:*:*:key/*",
+            "Condition": {
+                "StringLike": {
+                    "kms:EncryptionContext:SecretARN": "arn:aws:secretsmanager:*:*:secret:*",
+                    "kms:ViaService": "secretsmanager.*.amazonaws.com"
+                }
+            }
+        }
+    ]
+}

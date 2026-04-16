@@ -38,7 +38,9 @@ Notes:
 
 7) Create ECS Cluster
 
-8) Create ECS TAsk definition with 
+8) Create ECS TAsk definition (see full json in a separate file)
+
+9) Create Service under cluster
 
     Task Role (custom) :student-app-Secret-Reader (retrieve Env from secret manager)
     TAskExecution Role : ecs-TaskExecutionRole (pulls image from container)
@@ -96,4 +98,4 @@ def health_check():
 
 
 5) Load balancer connectivity problem
-ISsue : LBs placed on private subnets, I changed on the two public in teh same VPC 
+ISsue : LBs placed on private subnets by the ECS service . Need to change the LB networks to the two public in teh same VPC 
