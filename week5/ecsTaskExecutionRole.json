@@ -1,7 +1,6 @@
 
 
 //AmazonECSTaskExecutionRolePolicy
-AWS managed
 
 {
     "Version": "2012-10-17",
