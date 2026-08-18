@@ -41,3 +41,6 @@ DB
 -secret manager for password
 -generate a random password
 -create a KMS key for db encryption
+
+
+
