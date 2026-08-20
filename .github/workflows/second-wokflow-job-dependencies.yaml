@@ -1,0 +1,25 @@
+name: Second-Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  first_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: multiple commands 1
+        run: | 
+            echo "Hello World"
+            wait 10
+            echo "Job1 completed"
+
+  second_job: 
+      runs-on: windows-latest
+      needs: first_job
+      steps:
+        - name: multiple commands 2
+          run: |
+            echo "Job2 started"
+            wait 5
+            echo "Job2 completed"
+
