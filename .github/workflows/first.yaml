@@ -1,0 +1,23 @@
+#This is my first workflow to understand how GitHub Actions work.
+
+name: First Workflow
+
+#it will run on manual trigger
+on : 
+    workflow_dispatch:
+
+jobs:
+    first_job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: single command
+              run: echo "Hello World"
+    second_job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: multiple commands
+              run: |
+                echo "Hello World"
+                echo "This is my first workflow" 
+
+            
