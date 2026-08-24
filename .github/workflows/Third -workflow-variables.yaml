@@ -1,6 +1,6 @@
 #Workflow for application deployment on ECS
 
-name: ECSapp-workflow
+name: Third workflow-run on push from any branch
 
 on:
   push
