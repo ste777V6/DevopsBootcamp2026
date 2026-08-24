@@ -3,6 +3,8 @@ name: Second-Workflow
 on:
   workflow_dispatch:
 
+# it wil run on manual trigger
+
 jobs:
   first_job:
     runs-on: ubuntu-latest
