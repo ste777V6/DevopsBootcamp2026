@@ -26,9 +26,9 @@ jobs:
         env: 
           STEP_GREETINGS: "Hello from step variable- in job1"
         run: |
-            echo "Hello from {{ env.WORKLOW_GREETINGS }}"
-            echo "Hello from {{ env.JOB_GREETINGS }}"
-            echo "Hello from {{ env.STEP_GREETINGS }}"
+            echo "Hello from ${{ env.WORKLOW_GREETINGS }}"
+            echo "Hello from ${{ env.JOB_GREETINGS }}"
+            echo "Hello from ${{ env.STEP_GREETINGS }}"
 
   job2:
     env:
@@ -40,7 +40,7 @@ jobs:
         env: 
           STEP_GREETINGS: "Hello from step variable- in job2"
         run: |
-            echo "Hello from {{ env.WORKLOW_GREETINGS }}"
-            echo "Hello from {{ env.JOB_GREETINGS }}"
-            echo "Hello from {{ env.STEP_GREETINGS }}"
+            echo "Hello from ${{ env.WORKLOW_GREETINGS }}"
+            echo "Hello from ${{ env.JOB_GREETINGS }}"
+            echo "Hello from ${{ env.STEP_GREETINGS }}"
 
