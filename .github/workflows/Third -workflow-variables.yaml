@@ -1,0 +1,46 @@
+#Workflow for application deployment on ECS
+
+name: Third workflow-run on push from any branch
+
+on:
+  push
+ #it will run on push to any branch
+
+#workflow level env variables  
+env:
+  WORKLOW_GREETINGS: "Hello from ECSapp-workflow" 
+
+
+    # Create 3 jobs for the workflow
+#1)lint the code. Install terraform and run terraform fmt to lint the code
+#2)build the docker image and push it to ECR. Docker build ecr login and docker push to ECR
+#3)Deploy the application to ECS. Use the latest image from ECR. New version of task definition should be created .Deployed to ECS service. Use terraform to deploy the application to ECS.
+
+jobs:
+  job1:
+    env: 
+      JOB_GREETINGS: "Hello from job1"
+    runs-on: ubuntu-latest
+    steps:
+      - name: step1
+        env: 
+          STEP_GREETINGS: "Hello from step variable- in job1"
+        run: |
+            echo "Hello from {{ env.WORKLOW_GREETINGS }}"
+            echo "Hello from {{ env.JOB_GREETINGS }}"
+            echo "Hello from {{ env.STEP_GREETINGS }}"
+
+  job2:
+    env:
+      JOB_GREETINGS: "Hello from job2"
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+      - name: step2
+        env: 
+          STEP_GREETINGS: "Hello from step variable- in job2"
+        run: |
+            echo "Hello from {{ env.WORKLOW_GREETINGS }}"
+            echo "Hello from {{ env.JOB_GREETINGS }}"
+            echo "Hello from {{ env.STEP_GREETINGS }}"
+
