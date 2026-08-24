@@ -1,0 +1,27 @@
+name : Fourth workflow-run on push from main branch - pull request approval
+
+on:
+    push:
+      branches:
+        - main
+
+
+#workflow level env variables  
+env:
+  WORKLOW_GREETINGS: "Hello from ECSapp-workflow"
+
+
+steps:
+  - name: step1-install terraform and check is installed
+    env: 
+      STEP_GREETINGS: "Hello from step variable- in job1"
+    run: |
+        echo "Hello from ${{ env.WORKLOW_GREETINGS }}"
+        echo "Hello from ${{ env.JOB_GREETINGS }}"
+        terraform version
+        if [ $? -eq 0 ]; then
+            echo "Terraform is installed"
+        else
+            echo "Terraform is not installed"
+        fi
+        
