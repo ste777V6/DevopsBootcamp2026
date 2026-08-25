@@ -10,18 +10,23 @@ on:
 env:
   WORKLOW_GREETINGS: "Hello from ECSapp-workflow"
 
-
-steps:
-  - name: step1-install terraform and check is installed
+jobs: 
+  job1:
     env: 
-      STEP_GREETINGS: "Hello from step variable- in job1"
-    run: |
-        echo "Hello from ${{ env.WORKLOW_GREETINGS }}"
-        echo "Hello from ${{ env.JOB_GREETINGS }}"
-        terraform version
-        if [ $? -eq 0 ]; then
+      JOB_GREETINGS: "Hello from job1"
+    runs-on: ubuntu-latest
+    steps:
+      - name: step1-install terraform and check is installed
+        env: 
+          STEP_GREETINGS: "Hello from step variable- in job1"
+        run: |
+          echo "Hello from ${{ env.WORKLOW_GREETINGS }}"
+          echo "Hello from ${{ env.JOB_GREETINGS }}"
+          echo "Hello from ${{ env.STEP_GREETINGS }}"
+          terraform version
+          if [ $? -eq 0 ]; then
             echo "Terraform is installed"
-        else
+          else
             echo "Terraform is not installed"
-        fi
+          fi
         
