@@ -16,16 +16,16 @@ jobs:
       JOB_GREETINGS: "Hello from job1"
     runs-on: ubuntu-latest
     steps:
-      - name: step1-install terraform and check is installed
+      - name: step1-check if terraform is installed safely
         env: 
           STEP_GREETINGS: "Hello from step variable- in job1"
         run: |
           echo "Hello from ${{ env.WORKLOW_GREETINGS }}"
           echo "Hello from ${{ env.JOB_GREETINGS }}"
           echo "Hello from ${{ env.STEP_GREETINGS }}"
-          terraform version
-          if [ $? -eq 0 ]; then
+          if command -v terraform >/dev/null 2>&1; then
             echo "Terraform is installed"
+            terraform version
           else
             echo "Terraform is not installed"
           fi

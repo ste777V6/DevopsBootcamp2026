@@ -3,8 +3,11 @@
 name: Third workflow-run on push from any branch
 
 on:
-  push
- #it will run on push to any branch
+  push:
+    # it will run on push to any branch
+    branches-ignore:
+      - main
+    #except main branc it will run on push to any other branch
 
 #workflow level env variables  
 env:
