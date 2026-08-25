@@ -7,8 +7,8 @@ on:
     # it will run on push to any branch
     branches-ignore:
       - main
-    #except main branch, it will run on push to any other branch
-    
+    #except main branc it will run on push to any other branch
+
 #workflow level env variables  
 env:
   WORKLOW_GREETINGS: "Hello from ECSapp-workflow" 
