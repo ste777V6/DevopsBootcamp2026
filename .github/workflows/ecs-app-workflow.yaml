@@ -1,0 +1,49 @@
+name: ecs-app-workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main    
+env:
+    AWS_REGION: us-east-1
+    #ECR_REPOSITORY: ecs-app-repo
+    #ECS_CLUSTER: ecs-app-cluster
+    #ECS_SERVICE: ecs-app-service
+
+    Terraform_Version: 1.12.2
+    infra_path: /week6/Infra
+    app_path: week6/student-portal-for-ECS
+
+jobs:
+  terraform:
+    name: Terraform Plan and Apply
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@4
+    
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.Terraform_Version }}
+    
+
+      - name: Terraform Init
+        working-directory: ${{ env.infra_path }}
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: ${{ env.infra_path }}
+        run: terraform plan
+
+      - name: Terraform Apply
+        working-directory: ${{ env.infra_path }}
+        run: terraform apply -auto-approve

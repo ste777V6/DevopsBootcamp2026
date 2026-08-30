@@ -1,0 +1,43 @@
+name: terraform pr checks
+
+#when someone creates a pull request to main branch this workflow will run. It will not run on push to main branch. It will only run on pull request to main branch. It will not run on push to any other branch. It will only run on pull request to main branch.
+on:
+  pull_request:
+    branches:
+      - main
+env:
+        AWS_REGION: us-east-1
+        Terraform_Version: 1.12.2
+        infra_path: /week6/Infra
+jobs: 
+
+    terraform plan:
+        name: Terraform Plan
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@4
+        
+          - name: Set up AWS credentials
+            uses: aws-actions/configure-aws-credentials@v2
+            with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: ${{ env.AWS_REGION }}
+
+          - name: Set up Terraform
+            uses: hashicorp/setup-terraform@v4
+            with:
+              terraform_version: ${{ env.Terraform_Version }}
+        
+          - name: Terraform Init
+            working-directory: ${{ env.infra_path }}
+            run: terraform init
+
+          - name: fmt check
+            working-directory: ${{ env.infra_path }}
+            run: terraform fmt -check
+
+          - name: Terraform Plan
+            working-directory: ${{ env.infra_path }}
+            run: terraform plan
