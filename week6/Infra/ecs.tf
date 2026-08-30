@@ -2,13 +2,13 @@
 #New em pty repository
 resource "aws_ecr_repository" "app_ecr" {
   name = "${var.prefix}-${var.app_name}-ecr"
-  
+
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "ecs-app-cluster"
   #ENable container insights for ECS cluster - charge for PROD
- # setting {
+  # setting {
   #  name = "containerInsights"
   #  value = "enabled"
   #}
@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "app_task" {
   #Task permission
   execution_role_arn = data.aws_iam_role.ecs_task_execution_role.arn
   #App permission - allow to execute commands in the container
-  task_role_arn      = aws_iam_role.ecs_task_role.arn
+  task_role_arn = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([
     {
@@ -38,23 +38,23 @@ resource "aws_ecs_task_definition" "app_task" {
         }
       ]
       #environment = [
-       # {
-        #  name  = "DB_NAME"
-         # value = local.db_name # "mydb" — static, no secret needed
-        #},
-        #{
-         # name  = "DB_PORT"
-         # value = "5432" # also static
-        #},
-        #{
-         # name  = "DB_USER"
-         # value = "myuser"
-        #},
+      # {
+      #  name  = "DB_NAME"
+      # value = local.db_name # "mydb" — static, no secret needed
+      #},
+      #{
+      # name  = "DB_PORT"
+      # value = "5432" # also static
+      #},
+      #{
+      # name  = "DB_USER"
+      # value = "myuser"
+      #},
 
-        #{
-         # name  = "DB_HOST"
-         # value = aws_db_instance.postgres.address
-        #}
+      #{
+      # name  = "DB_HOST"
+      # value = aws_db_instance.postgres.address
+      #}
 
 
       #]
@@ -62,10 +62,10 @@ resource "aws_ecs_task_definition" "app_task" {
       secrets = [
 
         {
-         # name      = "DB_PASSWORD"
-         # valueFrom = "${aws_db_instance.postgres.master_user_secret[0].secret_arn}:password::"
-         name      = "DB_LINK"
-         valueFrom = aws_secretsmanager_secret.db_link.arn
+          # name      = "DB_PASSWORD"
+          # valueFrom = "${aws_db_instance.postgres.master_user_secret[0].secret_arn}:password::"
+          name      = "DB_LINK"
+          valueFrom = aws_secretsmanager_secret.db_link.arn
         }
       ]
 
@@ -83,11 +83,11 @@ resource "aws_ecs_task_definition" "app_task" {
 }
 
 resource "aws_ecs_service" "app_service" {
-  name            = "${var.prefix}-${var.app_name}-service"
-  cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.app_task.arn
-  desired_count   = 2
-  launch_type     = "FARGATE"
+  name                   = "${var.prefix}-${var.app_name}-service"
+  cluster                = aws_ecs_cluster.ecs_cluster.id
+  task_definition        = aws_ecs_task_definition.app_task.arn
+  desired_count          = 2
+  launch_type            = "FARGATE"
   enable_execute_command = true # allow to execute commands in the container
 
   network_configuration {
@@ -114,4 +114,4 @@ resource "aws_ecs_service" "app_service" {
 
 
 
- 
+
