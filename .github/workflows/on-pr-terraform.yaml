@@ -1,7 +1,7 @@
 name: terraform pr checks
 
 #when someone creates a pull request to main branch this workflow will run. It will not run on push to main branch. It will only run on pull request to main branch. It will not run on push to any other branch. It will only run on pull request to main branch.
-on 
+on:
   pull_request:
     branches:
       - main
