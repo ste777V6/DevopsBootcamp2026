@@ -4,19 +4,19 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "environment"{
-  type = string
+variable "environment" {
+  type    = string
   default = "Dev"
 }
 
 #Defualt tag moved under provider configuration
 #variable "aws_tags" {
- # description = "A map of tags to apply to all resources"
-  #type        = map(string)
-  #default = {
-   # Environment = "dev"
-    #Project     = "terraform-bootcamp"
-  #}
+# description = "A map of tags to apply to all resources"
+#type        = map(string)
+#default = {
+# Environment = "dev"
+#Project     = "terraform-bootcamp"
+#}
 #}
 
 variable "vpc_cidr" {

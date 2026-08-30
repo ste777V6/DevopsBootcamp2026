@@ -41,11 +41,11 @@ resource "aws_secretsmanager_secret" "db_link" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect   = "Allow"
+      Effect = "Allow"
       Principal = {
         AWS = data.aws_iam_role.ecs_task_execution_role.arn
       }
-       Action   = ["secretsmanager:GetSecretValue"]
+      Action   = ["secretsmanager:GetSecretValue"]
       Resource = "*"
     }]
   })

@@ -60,7 +60,7 @@ resource "aws_s3_bucket_policy" "lb_logs" {
 # Create an ECS task role to allow the application to execute commands in the container
 resource "aws_iam_role" "ecs_task_role" {
   name = "ecsTaskRole"
-assume_role_policy = jsonencode({
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
       Effect = "Allow"
@@ -94,4 +94,4 @@ resource "aws_iam_role_policy_attachment" "ecs_task_role_exec" {
   role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.ecs_exec.arn
 }
-    
+
