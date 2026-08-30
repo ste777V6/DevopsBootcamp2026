@@ -8,7 +8,7 @@ on:
 env:
         AWS_REGION: us-east-1
         Terraform_Version: 1.12.2
-        infra_path: /week6/Infra
+        infra_path: week6/Infra
 jobs: 
       terraform_checks:
         name: Terraform Plan
