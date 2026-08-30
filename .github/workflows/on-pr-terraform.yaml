@@ -10,8 +10,7 @@ env:
         Terraform_Version: 1.12.2
         infra_path: /week6/Infra
 jobs: 
-
-    terraform plan:
+      terraform_checks:
         name: Terraform Plan
         runs-on: ubuntu-latest
         steps:
