@@ -37,3 +37,5 @@ curl -fsSL https://claude.ai/install.sh | bash
 One caveat worth flagging: whatever you install this way disappears the moment the task restarts or redeploys — Fargate containers are ephemeral and there's no persistent volume here. If you need Claude Code available repeatedly (not just a one-off debug session), it'd make more sense to add it to the Dockerfile, or run it in a separate one-off dev container instead of the live app container.
 
 Want me to make the Terraform changes (task role + enable_execute_command) for you?
+
+Edited one file
