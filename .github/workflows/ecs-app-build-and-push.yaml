@@ -33,6 +33,10 @@ jobs:
         working-directory: ${{ env.APP_PATH }}
         run: |
           docker build -t ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} .
+    
+      - name: tag Docker image with ECR registry URI
+        run: |
+          docker tag ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
       - name: Push Docker image to ECR
         run: |
