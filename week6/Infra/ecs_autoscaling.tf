@@ -53,7 +53,7 @@ resource "aws_appautoscaling_policy" "request_count" {
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ALBRequestCountPerTarget"
-      resource_label         = "${aws_lb.app-lb.arn_suffix}/${aws_lb_target_group.app-tg-blue.name}"
+      resource_label         = "${aws_lb.app-lb.arn_suffix}/${aws_lb_target_group.app-tg-blue.arn_suffix}"
     }
     target_value       = 1000
     scale_in_cooldown  = 300
