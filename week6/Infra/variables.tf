@@ -77,7 +77,7 @@ variable "prefix" {
 variable "ecr_image" {
   description = "The ECR image to use for the ECS task"
   type        = string
-  default     = "344707019777.dkr.ecr.us-east-1.amazonaws.com/dev/studentportal:latest"
+  default     = "344707019777.dkr.ecr.us-east-1.amazonaws.com/bootcamp2026-student-portal-ecr:latest"
 }
 
 variable "domain_name" {
