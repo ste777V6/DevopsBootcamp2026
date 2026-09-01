@@ -12,7 +12,7 @@ env:
     #ECS_SERVICE: ecs-app-service
 
     Terraform_Version: 1.12.2
-    infra_path: /week6/Infra
+    infra_path: week6/Infra
     app_path: week6/student-portal-for-ECS
 
 jobs:
