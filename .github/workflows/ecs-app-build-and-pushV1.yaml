@@ -68,18 +68,41 @@ jobs:
           --task-definition ${{ env.ECS_TASK_FAMILY }} \
           --query taskDefinition > task-definition.json
 
-      - name: Render new task definition with updated image
-        id: render-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+      - name: Update image and strip non-registrable fields
+        run: |
+          NEW_IMAGE="${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
 
-      - name: Deploy to ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.render-task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+          jq --arg IMAGE "$NEW_IMAGE" --arg NAME "${{ env.CONTAINER_NAME }}" '
+            .containerDefinitions = (.containerDefinitions | map(
+              if .name == $NAME then .image = $IMAGE else . end
+            )) |
+            del(.taskDefinitionArn, .revision, .status, .requiresAttributes,
+                .compatibilities, .registeredAt, .registeredBy)
+          ' task-def.json > new-task-def.json
+
+      - name: Register new task definition revision
+        id: register-task-def
+        run: |
+          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://new-task-def.json \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          echo "New task definition: $NEW_TASK_DEF_ARN"
+          echo "task_def_arn=$NEW_TASK_DEF_ARN" >> "$GITHUB_OUTPUT"
+
+      - name: Update service to use new revision
+        run: |
+          aws ecs update-service \
+            --cluster "${{ env.ECS_CLUSTER }}" \
+            --service "${{ env.ECS_SERVICE }}" \
+            --task-definition "${{ steps.register-task-def.outputs.task_def_arn }}" \
+            --force-new-deployment
+
+      - name: Wait for service to stabilize
+        run: |
+          aws ecs wait services-stable \
+            --cluster "${{ env.ECS_CLUSTER }}" \
+            --service "${{ env.ECS_SERVICE }}"
+
+          echo "Deployment stable."
