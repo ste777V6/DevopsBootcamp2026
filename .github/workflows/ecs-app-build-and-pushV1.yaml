@@ -1,4 +1,4 @@
-name : ECS application build and push on ECR
+name : ECS application build and pushV1
 
 on:
   workflow_dispatch:
