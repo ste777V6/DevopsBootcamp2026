@@ -1,4 +1,4 @@
-name: ecs-app-deploy-workflow
+name: ecs-app-deploy-terraform
 
 on:
   workflow_dispatch:
