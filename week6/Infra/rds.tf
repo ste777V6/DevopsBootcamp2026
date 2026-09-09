@@ -37,7 +37,7 @@ resource "aws_db_instance" "postgres" {
 
 #Creation of the secret
 resource "aws_secretsmanager_secret" "db_link" {
-  name = local.db_identifier
+  name                    = local.db_identifier
   recovery_window_in_days = 0
   policy = jsonencode({
     Version = "2012-10-17"
