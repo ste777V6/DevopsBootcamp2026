@@ -1,4 +1,4 @@
-name: ecs-app-workflow
+name: ecs-app-deploy-workflow
 
 on:
   workflow_dispatch:
