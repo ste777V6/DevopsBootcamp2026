@@ -52,7 +52,6 @@ jobs:
       ECS_SERVICE: ecs-app-service
       ECS_TASK_DEFINITION: ecs-app-task-def
       CONTAINER_NAME: ecs-app-container
-      NEW_IMAGE: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
     steps:
 
@@ -74,7 +73,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ env.NEW_IMAGE }}
+          image: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
