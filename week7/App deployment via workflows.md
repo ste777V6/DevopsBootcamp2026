@@ -48,5 +48,28 @@ Not true - the issue was the wrong tag : latest
 
 <img width="494" height="308" alt="image" src="https://github.com/user-attachments/assets/c748b0be-12bc-4a47-a04d-c409b1c7b9ef" />
 
+##FIX V2
+Issue:
+  1. Terraform creates the ECS task definition with ecr_image defaulting to :latest
+  2. On first deployment, the ECR repo is created but has no images yet
+  3. ECS fails to start because :latest doesn't exist
+
+  The solution is to modify the deploy workflow to build and push an initial image before running Terraform, and pass the image tag to Terraform.
+
+The workflow is now updated with three sequential jobs:
+
+  1. create-ecr - Creates only the ECR repository first using -target
+  2. build-and-push - Builds and pushes the Docker image with github.sha tag
+  3. terraform - Deploys all remaining infrastructure, passing the correct image tag via -var="ecr_image=..."
+
+  This ensures the image exists in ECR before ECS tries to pull it, solving the first-deployment issue.
+
+  The key changes:
+  - Added ECR environment variables matching your V2 workflow
+  - Split into 3 jobs with proper needs: dependencies
+  - First job uses -target=aws_ecr_repository.app_ecr to create only the ECR repo
+  - Final Terraform apply passes the actual image tag instead of relying on :latest default
 
 
+## ADDITION
+terraform destroy alway failing because can't remove a not empty ECR registry

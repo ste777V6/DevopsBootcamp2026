@@ -4,25 +4,25 @@ on:
   workflow_dispatch:
   #push:
     #branches:
-      #- main    
+      #- main
 env:
     AWS_REGION: us-east-1
-    #ECR_REPOSITORY: ecs-app-repo
-    #ECS_CLUSTER: ecs-app-cluster
-    #ECS_SERVICE: ecs-app-service
-
+    ECR_REPOSITORY: bootcamp2026-student-portal-ecr
+    ECR_REGISTRY_URI: 344707019777.dkr.ecr.us-east-1.amazonaws.com
+    IMAGE_TAG: ${{ github.sha }}
     Terraform_Version: 1.12.2
     infra_path: week6/Infra
     app_path: week6/student-portal-for-ECS
 
 jobs:
-  terraform:
-    name: Terraform Plan and Apply
+  # First job: Create ECR repository only (needed before pushing image)
+  create-ecr:
+    name: Create ECR Repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-    
+
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -34,7 +34,64 @@ jobs:
         uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: ${{ env.Terraform_Version }}
-    
+
+      - name: Terraform Init
+        working-directory: ${{ env.infra_path }}
+        run: terraform init
+
+      - name: Create ECR Repository Only
+        working-directory: ${{ env.infra_path }}
+        run: terraform apply -auto-approve -target=aws_ecr_repository.app_ecr
+
+  # Second job: Build and push initial image to ECR
+  build-and-push:
+    name: Build and Push Initial Image
+    runs-on: ubuntu-latest
+    needs: create-ecr
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker image
+        working-directory: ${{ env.app_path }}
+        run: docker build -t ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} .
+
+      - name: Tag Docker image
+        run: docker tag ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+
+      - name: Push Docker image to ECR
+        run: docker push ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+
+  # Third job: Deploy remaining infrastructure with the correct image tag
+  terraform:
+    name: Terraform Plan and Apply
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.Terraform_Version }}
 
       - name: Terraform Init
         working-directory: ${{ env.infra_path }}
@@ -42,8 +99,8 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ${{ env.infra_path }}
-        run: terraform plan
+        run: terraform plan -var="ecr_image=${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
 
       - name: Terraform Apply
         working-directory: ${{ env.infra_path }}
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var="ecr_image=${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
