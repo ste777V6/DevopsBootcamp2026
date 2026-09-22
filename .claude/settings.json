@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(pytest *)",
+      "Bash(python -m pytest *)",
+      "Bash(ruff *)",
+      "Bash(docker build *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(terraform plan *)",
+      "Bash(docker push *)",
+      "Bash(python *)",
+      "Bash(wget *)",
+      "Bash(aws *)",
+      "Bash(terraform apply *)",
+      "Bash(terraform destroy *)",  
+      "Read(.env*)",
+      "Read(~/.aws/**)",
+      "Read(~/.ssh/**)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "filesystem": {
+      "denyRead": ["~/.aws", "~/.ssh"]
+    }
+  }
+}
