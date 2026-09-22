@@ -39,6 +39,7 @@ V2 is using pre-built Github actions
 I've downgraded the app to the previous version because I taught that the issue was teh new app version-
 Not true - the issue was the wrong tag : latest 
 
+<img width="494" height="308" alt="image" src="https://github.com/user-attachments/assets/c748b0be-12bc-4a47-a04d-c409b1c7b9ef" />
 
 
 
