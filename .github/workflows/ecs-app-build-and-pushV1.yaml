@@ -46,10 +46,10 @@ jobs:
   deploy-to-ecs:
     env :
       ECS_CLUSTER: ecs-app-cluster
-      ECS_SERVICE: ecs-app-service
-      ECS_TASK_DEFINITION: ecs-app-task-def
-      ECS_TASK_FAMILY: ecs-app-task-family
-      CONTAINER_NAME: ecs-app-container
+      ECS_SERVICE: bootcamp2026-student-portal-service
+      ECS_TASK_DEFINITION: student-portal
+      ECS_TASK_FAMILY: student-portal
+      CONTAINER_NAME: student-portal
       
     name: Deploy to ECS
     runs-on: ubuntu-latest
