@@ -12,6 +12,10 @@ Requirement for the deployment to succeed:
 Need to have reserved ip in AWS
 A record stev6devops.2bd.net" in Free IP
 Permitted AWS servers for validation () in FreeIP
+
+<img width="800" height="196" alt="image" src="https://github.com/user-attachments/assets/d7312281-2b69-46e1-92ab-5e95f4f55886" />
+
+
 ISSUE founded : the image created was tagged with GitHub commit hash - deployment failed because terraform was looking for :latest Tag
 FIX : I've run the V2 script for update the app and it started to work
 
