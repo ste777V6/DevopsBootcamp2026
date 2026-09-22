@@ -1,8 +1,8 @@
 
 #New em pty repository
 resource "aws_ecr_repository" "app_ecr" {
-  name = "${var.prefix}-${var.app_name}-ecr"
-
+  name         = "${var.prefix}-${var.app_name}-ecr"
+  force_delete = true
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {
