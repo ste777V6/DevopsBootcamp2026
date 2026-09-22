@@ -52,7 +52,6 @@ jobs:
       ECS_SERVICE: bootcamp2026-student-portal-service
       ECS_TASK_DEFINITION: student-portal
       CONTAINER_NAME: student-portal
-      NEW_IMAGE: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
     steps:
 
