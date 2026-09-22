@@ -18,22 +18,150 @@ class User(db.Model):
 
 TEMPLATE = '''
 <!DOCTYPE html>
-<html><head><title>Simple App</title></head>
-<body style="font-family: Arial; max-width: 600px; margin: 50px auto;">
-    <h1>User Registration</h1>
-    <form method="POST">
-        <input type="text" name="name" placeholder="Name" required style="padding: 8px; margin: 5px; width: 200px;"><br>
-        <input type="email" name="email" placeholder="Email" required style="padding: 8px; margin: 5px; width: 200px;"><br>
-        <button type="submit" style="padding: 10px 20px; margin: 5px;">Submit</button>
-    </form>
-    <h2>Users ({{ users|length }})</h2>
-    <table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%;">
-        <tr><th>ID</th><th>Name</th><th>Email</th></tr>
-        {% for user in users %}
-        <tr><td>{{ user.id }}</td><td>{{ user.name }}</td><td>{{ user.email }}</td></tr>
-        {% endfor %}
-    </table>
-</body></html>
+<html>
+<head>
+    <title>Student Portal v2</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input[type="text"], input[type="email"] {
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus, input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .users-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .count-badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+        th:first-child { border-radius: 10px 0 0 0; }
+        th:last-child { border-radius: 0 10px 0 0; }
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+        tr:hover td {
+            background: #f8f9ff;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>Student Portal</h1>
+                <span class="version-badge">v2.0</span>
+            </div>
+            <form method="POST">
+                <input type="text" name="name" placeholder="Enter your name" required>
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <button type="submit">Register Student</button>
+            </form>
+        </div>
+
+        <div class="card users-section">
+            <h2>Registered Students <span class="count-badge">{{ users|length }}</span></h2>
+            {% if users %}
+            <table>
+                <tr><th>ID</th><th>Name</th><th>Email</th></tr>
+                {% for user in users %}
+                <tr><td>{{ user.id }}</td><td>{{ user.name }}</td><td>{{ user.email }}</td></tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <div class="empty-state">No students registered yet. Be the first!</div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
 '''
 
 @app.route('/', methods=['GET', 'POST'])

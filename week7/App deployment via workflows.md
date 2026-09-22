@@ -1,4 +1,4 @@
-##APP DEPLOYMENT AND UPGRADE
+##APP DEPLOYMENT AND UPGRADE 
 
 Use ecs-app-deploy-terraform "run it manually" to create the Terraform infrastructure and deploy the first version of the app contained in ECR registry : 
 
@@ -9,15 +9,34 @@ The domain where the app is deployed is :
 "student-portal-stev6devops.2bd.net"
 
 Requirement for the deployment to succeed:
-
 Need to have reserved ip in AWS
 A record stev6devops.2bd.net" in Free IP
-Permitted AWS servers for validation ()
+Permitted AWS servers for validation () in FreeIP
+ISSUE founded : the image created was tagged with GitHub commit hash - deployment failed because terraform was looking for :latest Tag
+FIX : I've run the V2 script for update the app and it started to work
+
+
+##Deployment
+
+Run the ecs-app-deploy-terraform
+Wait creation of Load Balancer
 Create a CNAME record  student.portal.stev6devops.2bd.net -----> Current LB DNS
 Create a CNAME record certificate------>certificate
-Wait 20 minutes for validation
-Load balancer will be created
+Wait few minutes for validation
+Load balancer will also have https listener with certificate
+Wait for creation of ECS task ( depends_on = [aws_lb_listener.https] )
 
-###APP UPGRADE 
+##APP UPGRADE 
 
-Use ecs-app-build-and-push "run it manually"
+Use ecs-app-build-and-push (V2 tested) "run it manually" 
+V1 is using jq
+V2 is using pre-built Github actions
+
+
+##NOTES
+I've downgraded the app to the previous version because I taught that the issue was teh new app version-
+Not true - the issue was the wrong tag : latest 
+
+
+
+
