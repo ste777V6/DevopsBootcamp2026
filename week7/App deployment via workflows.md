@@ -26,6 +26,9 @@ Wait few minutes for validation
 Load balancer will also have https listener with certificate
 Wait for creation of ECS task ( depends_on = [aws_lb_listener.https] )
 
+<img width="767" height="410" alt="image" src="https://github.com/user-attachments/assets/6698caa5-af40-4cd5-be37-dcb07aed6d8e" />
+
+
 ##APP UPGRADE 
 
 Use ecs-app-build-and-push (V2 tested) "run it manually" 
