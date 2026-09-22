@@ -49,9 +49,10 @@ jobs:
     needs: build-and-push
     env:
       ECS_CLUSTER: ecs-app-cluster
-      ECS_SERVICE: ecs-app-service
-      ECS_TASK_DEFINITION: ecs-app-task-def
-      CONTAINER_NAME: ecs-app-container
+      ECS_SERVICE: bootcamp2026-student-portal-service
+      ECS_TASK_DEFINITION: student-portal
+      CONTAINER_NAME: student-portal
+      NEW_IMAGE: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
     steps:
 
