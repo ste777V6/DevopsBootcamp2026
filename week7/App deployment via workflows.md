@@ -32,6 +32,8 @@ Use ecs-app-build-and-push (V2 tested) "run it manually"
 V1 is using jq
 V2 is using pre-built Github actions
 
+<img width="908" height="393" alt="image" src="https://github.com/user-attachments/assets/dc2cd7c3-19f4-44e6-bff9-67a3f1e2a491" />
+
 
 ##NOTES
 I've downgraded the app to the previous version because I taught that the issue was teh new app version-
