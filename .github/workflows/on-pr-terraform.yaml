@@ -1,6 +1,7 @@
 name: terraform pr checks
 
-#when someone creates a pull request to main branch this workflow will run. It will not run on push to main branch. 
+#when someone creates a pull request to main branch this workflow will run. It will not run on push to main branch.
+#Triggered only when changes are made to the week6/Infra directory
 on:
   workflow_dispatch:
   pull_request:
