@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "app_task" {
   #App permission - allow to execute commands in the container
   task_role_arn = aws_iam_role.ecs_task_role.arn
   
-    #When updating the task definition, Terrfaomr does not roll back the container definition to the previous version.(due to drift) 
+  #When updating the task definition, Terrfaomr does not roll back the container definition to the previous version.(due to drift) 
   lifecycle {
     ignore_changes = [container_definitions]
   }
