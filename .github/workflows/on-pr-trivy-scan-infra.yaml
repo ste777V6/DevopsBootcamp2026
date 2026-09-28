@@ -25,7 +25,6 @@ jobs:
           scan-type: 'config'
           scan-ref: 'week6/Infra'
           trivyignorefile: 'week6/Infra/.trivyignore.yaml'
-          hide-progress: true
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
