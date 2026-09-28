@@ -266,3 +266,8 @@ Immutable ECR tags (AWS-0031). Leave this until your app pipeline tags images wi
 - .trivyignore.yaml for AWS-0053 and AWS-0132, so the gate goes green.
 
 Items 1–4 fit in one PR and clear 7 of the 14 findings. Run terraform plan before applying, and check that the only replacement it shows is the RDS instance.
+
+
+## After remediation
+
+![alt text](image-2.png)
