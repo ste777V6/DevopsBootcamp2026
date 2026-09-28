@@ -7,6 +7,9 @@
 | **Severity filter** | HIGH, CRITICAL |
 | **Result** | 14 findings: 12 HIGH, 2 CRITICAL, in 5 of 8 files |
 
+<img width="439" height="365" alt="image" src="https://github.com/user-attachments/assets/431d3b93-4f97-4840-9b33-7be209eb37a6" />
+
+
 ## Summary
 
 | File | Findings | Checks |
