@@ -248,3 +248,18 @@ misconfigurations:
 - [ ] AWS-0053 — ignore with a justification
 - [ ] Add `.trivyignore.yaml` and reference it in the workflow
 - [ ] Re-run the pipeline and confirm the gate passes
+
+
+## Remediation steps
+
+Don't go by Trivy's severity labels. The two CRITICALs are about ECS egress, which is real but not your biggest exposure, and it's the most work to fix properly. Order by real risk against effort:
+
+- S3 public access block (AWS-0086/0087/0091/0093). One resource, no downtime, clears 4 findings, and stops the most common real-world AWS data leak. Add explicit SSE-S3 in the same change.
+- RDS encryption (AWS-0080). Do this early because it forces the database to be replaced. That's painless now, on a bootcamp DB with little data, and painful later with real data in it.
+- ALB drop invalid headers (AWS-0052). A one-line change that removes a class of header-smuggling tricks against your app.
+- ECR scan on push (AWS-0030). Also one line, and it gives you a second vulnerability check on every image.
+- ECS egress (AWS-0104). Now tighten it to 443 plus 5432 only to the RDS security group. That's a small change and kills the "any port, anywhere" exposure. VPC endpoints can come later.
+Immutable ECR tags (AWS-0031). Leave this until your app pipeline tags images with the commit SHA. If you flip it now and still push latest, your deploys break.
+- .trivyignore.yaml for AWS-0053 and AWS-0132, so the gate goes green.
+
+Items 1–4 fit in one PR and clear 7 of the 14 findings. Run terraform plan before applying, and check that the only replacement it shows is the RDS instance.
