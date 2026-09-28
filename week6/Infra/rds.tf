@@ -24,6 +24,7 @@ resource "aws_db_instance" "postgres" {
   instance_class         = "db.t3.micro"
   port                   = 5432
   allocated_storage      = 20
+  storage_encrypted      = true
   db_name                = local.db_name
   username               = local.db_username
   password               = random_password.db_master_password.result

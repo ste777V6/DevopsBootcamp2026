@@ -1,7 +1,8 @@
 
-#New em pty repository
+#New empty repository
 resource "aws_ecr_repository" "app_ecr" {
   name         = "${var.prefix}-${var.app_name}-ecr"
+  image_tag_mutability = "IMMUTABLE"
   force_delete = true
 }
 
