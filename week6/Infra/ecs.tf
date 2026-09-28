@@ -1,9 +1,9 @@
 
 #New empty repository
 resource "aws_ecr_repository" "app_ecr" {
-  name         = "${var.prefix}-${var.app_name}-ecr"
+  name                 = "${var.prefix}-${var.app_name}-ecr"
   image_tag_mutability = "IMMUTABLE"
-  force_delete = true
+  force_delete         = true
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {

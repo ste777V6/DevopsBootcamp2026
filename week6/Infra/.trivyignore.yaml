@@ -1,4 +1,5 @@
 misconfigurations:
+  
   - id: AWS-0053
     paths:
       - "alb.tf"
