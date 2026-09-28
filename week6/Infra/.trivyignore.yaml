@@ -1,0 +1,26 @@
+misconfigurations:
+  
+  - id: AWS-0053
+    paths:
+      - "alb.tf"
+    statement: "Public ALB is the application's intended entry point."
+    expired_at: 2027-03-31
+
+  - id: AWS-0132
+    paths:
+      - "s3.tf"
+    statement: "ALB access-log buckets only support SSE-S3; SSE-KMS breaks log delivery."
+    expired_at: 2027-03-31
+
+  - id: AWS-0030
+    paths:
+      - "ecs.tf"
+    statement: "ECS image will be scanned for vulnerabilities using Trivy in the GitHub workflow."
+    expired_at: 2027-03-31
+  
+  
+  - id: AWS-0104
+    paths:
+      - "security_groups.tf"
+    statement: "ECS tasks need HTTPS egress to AWS APIs until VPC endpoints are added."
+    expired_at: 2026-12-31

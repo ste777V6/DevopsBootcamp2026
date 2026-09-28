@@ -38,11 +38,12 @@ resource "aws_lb_target_group" "app-tg-green" {
 #Definition of ALB
 
 resource "aws_lb" "app-lb" {
-  name               = "app-lb-tf"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb-sg.id]
-  subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+  name                       = "app-lb-tf"
+  internal                   = false
+  load_balancer_type         = "application"
+  security_groups            = [aws_security_group.alb-sg.id]
+  subnets                    = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+  drop_invalid_header_fields = true
 
   #enable_deletion_protection = true
 
