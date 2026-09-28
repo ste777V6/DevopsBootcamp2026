@@ -24,7 +24,7 @@ jobs:
           version: v0.74.0
           scan-type: 'config'
           scan-ref: 'week6/Infra'
-          ignorefile: 'week6/Infra/.trivyignore.yaml'
+          trivyignores: 'week6/Infra/.trivyignore.yaml'
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
@@ -44,7 +44,7 @@ jobs:
           version: v0.74.0
           scan-type: 'config'
           scan-ref: 'week6/Infra'
-          ignorefile: 'week6/Infra/.trivyignore.yaml'
+          trivyignores: 'week6/Infra/.trivyignore.yaml'
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
           skip-setup-trivy: true
