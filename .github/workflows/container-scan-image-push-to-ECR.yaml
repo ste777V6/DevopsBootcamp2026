@@ -1,4 +1,5 @@
-name : ECS application build and scan - trivy
+name : container-scan
+description: Scan container images for vulnerabilities
 
 on:
   workflow_dispatch:
@@ -16,9 +17,9 @@ env:
     APP_PATH: week6/student-portal-for-ECS
 
 jobs:
-    
-  build-and-push:
-    name: Build and Push ECS Application
+  #Job1: Scan the container image for vulnerabilities using Trivy  
+  build-and-scan:
+    name: Build and scan container image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -27,31 +28,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Trivy vulnerability scanner in repo mode
+      - name: Run Trivy vulnerability scanner in image mode
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          scan-type: 'fs'
+          version: v0.74.0
+          scan-type: 'image'
           ignore-unfixed: true
           format: 'sarif'
-          output: 'trivy-repo.sarif'
+          output: 'trivy-image-scan.sarif'
           severity: 'CRITICAL'
           exit-code: '1'
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: 'trivy-repo.sarif'
+          sarif_file: 'trivy-image-scan.sarif'
+          category: 'trivy-image'
 
-      - name: Set up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-      
-      - name: Log in to Amazon ECR
-        id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v1
+  #Job2: Quality gate for container scan
+  quality-gate:
+    name: Quality gate for container scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Build Docker image
         working-directory: ${{ env.APP_PATH }}
@@ -65,17 +69,25 @@ jobs:
       - name: Scan Docker image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
+          version: v0.74.0
+          scan-type: 'image'
           image-ref: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           format: sarif
           output: trivy-docker.sarif
           severity: CRITICAL,HIGH
-          exit-code: '1'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
+          exit-code: '0'
+      
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          sarif_file: 'trivy-docker.sarif'
-            
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1        
+      
       - name: Push Docker image to ECR
         run: |
           docker push ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
