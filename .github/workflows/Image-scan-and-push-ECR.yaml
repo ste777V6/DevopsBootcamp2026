@@ -8,6 +8,10 @@ on:
       - main
     paths:
       - 'week6/student-portal-for-ECS/**'
+  push:
+    branches: [main]
+    paths:
+      - 'week6/student-portal-for-ECS/**'
     
 env:
     AWS_REGION: us-east-1

@@ -1,4 +1,4 @@
-name: trivy scan on PR for infra
+name: trivy scan for infra
 description: Scan repository for vulnerabilities on PR for infra
 
 on:
@@ -6,6 +6,10 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'week6/Infra/**'
+  push:
+    branches: [main]
     paths:
       - 'week6/Infra/**'
 
