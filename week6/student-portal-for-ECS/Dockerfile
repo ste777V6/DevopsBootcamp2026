@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.13-slim-bookworm
 
 WORKDIR /app
 
@@ -13,5 +13,3 @@ COPY . /app
 EXPOSE 5000
 # run the code
 CMD ["python", "app.py"]
-
-

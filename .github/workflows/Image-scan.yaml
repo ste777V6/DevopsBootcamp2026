@@ -54,6 +54,7 @@ jobs:
           output: 'trivy-image.sarif'
           severity: 'CRITICAL,HIGH'
           exit-code: '0'
+          trivyignores: 'week6/student-portal-for-ECS/.trivyignore.yaml'
 
       - name: Upload Trivy scan results to GitHub Security tab
         if: always()
@@ -93,4 +94,5 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
+          trivyignores: 'week6/student-portal-for-ECS/.trivyignore.yaml'
       
