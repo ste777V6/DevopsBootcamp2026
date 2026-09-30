@@ -8,10 +8,6 @@ on:
       - main
     paths:
       - 'week6/student-portal-for-ECS/**'
-  push:
-    branches: [main]
-    paths:
-      - 'week6/student-portal-for-ECS/**'
     
 env:
     AWS_REGION: us-east-1
@@ -93,21 +89,4 @@ jobs:
           output: trivy-docker.sarif
           severity: CRITICAL,HIGH
           exit-code: '0'
-      
-      - name: Set up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-      
-      - name: Log in to Amazon ECR
-        id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v1        
-      
-      - name: Push Docker image to ECR
-        run: |
-          docker push ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-
-# Comments here
       

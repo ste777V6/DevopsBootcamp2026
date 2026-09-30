@@ -8,10 +8,6 @@ on:
       - main
     paths:
       - 'week6/**'
-  push:
-    branches: [main]
-    paths:
-      - 'week6/**'
     
 env:
     AWS_REGION: us-east-1

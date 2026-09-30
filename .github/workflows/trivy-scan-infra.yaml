@@ -8,10 +8,6 @@ on:
       - main
     paths:
       - 'week6/Infra/**'
-  push:
-    branches: [main]
-    paths:
-      - 'week6/Infra/**'
 
 jobs:
   trivy-scan:
