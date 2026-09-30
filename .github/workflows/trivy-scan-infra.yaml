@@ -1,4 +1,4 @@
-name: trivy scan for infra
+name: trivy infra scan 
 description: Scan repository for vulnerabilities on PR for infra
 
 on:
