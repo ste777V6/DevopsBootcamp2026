@@ -27,7 +27,7 @@ jobs:
           scan-ref: 'week6/Infra'
           trivyignores: 'week6/Infra/.trivyignore.yaml'
           format: 'sarif'
-          output: 'trivy-results.sarif'
+          output: 'trivy-infra.sarif'
           severity: 'CRITICAL,HIGH'
           limit-severities-for-sarif: true
           exit-code: '0'
