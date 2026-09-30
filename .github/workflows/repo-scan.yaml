@@ -23,7 +23,7 @@ env:
 jobs:
     
   scan-repo-week6:
-    name: Build and scan repo
+    name: Scan repo
     runs-on: ubuntu-latest
     permissions:
       contents: read
