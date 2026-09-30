@@ -7,8 +7,8 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'week6/Infra/**'
+    #paths:
+      #- 'week6/Infra/**'
 env:
         AWS_REGION: us-east-1
         Terraform_Version: 1.12.2

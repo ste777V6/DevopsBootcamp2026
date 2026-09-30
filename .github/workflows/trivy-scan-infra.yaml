@@ -6,8 +6,8 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'week6/Infra/**'
+    #paths:
+      #- 'week6/Infra/**'
 
 jobs:
   trivy-scan:

@@ -6,8 +6,8 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'week6/student-portal-for-ECS/**'
+    #paths:
+      #- 'week6/student-portal-for-ECS/**'
     
 env:
     AWS_REGION: us-east-1
