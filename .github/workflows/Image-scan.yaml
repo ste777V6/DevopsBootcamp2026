@@ -46,6 +46,7 @@ jobs:
         with:
           version: v0.74.0
           scan-type: 'image'
+          scanners: 'vuln,secret,misconfig'
           image-ref: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           ignore-unfixed: true
           format: 'sarif'
@@ -86,6 +87,7 @@ jobs:
         with:
           version: v0.74.0
           scan-type: 'image'
+          scanners: 'vuln,secret,misconfig'
           image-ref: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           format: table
           ignore-unfixed: true
