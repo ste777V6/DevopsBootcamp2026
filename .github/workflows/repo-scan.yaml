@@ -1,0 +1,65 @@
+name : repo-scan
+description: Scan repository for vulnerabilities
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'week6/**'
+    
+env:
+    AWS_REGION: us-east-1
+    ECR_REPOSITORY: bootcamp2026-student-portal-ecr
+    ECR_REGISTRY_URI: 344707019777.dkr.ecr.us-east-1.amazonaws.com
+    IMAGE_TAG: ${{ github.sha }}
+    APP_PATH: week6/student-portal-for-ECS
+
+jobs:
+    
+  scan-repo-week6:
+    name: Scan repo
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          version: v0.74.0
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-repo.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-repo.sarif'
+          category: 'trivy-repo'
+  
+  quality-gate-repo-week6:
+    name: Quality gate for repo scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          version: v0.74.0
+          scan-type: 'fs'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
