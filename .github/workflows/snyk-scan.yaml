@@ -30,7 +30,7 @@ jobs:
 
       - uses: snyk/actions/setup@master
       
-      - name: Snyk Open Source test
+      - name: Snyk Open Source test  #Dependency test
         continue-on-error: true
         run: >-
           snyk test
@@ -39,12 +39,21 @@ jobs:
           --severity-threshold=high
           --sarif-file-output=snyk-oss.sarif
 
-      - name: Snyk IaC test
+      - name: Snyk IaC test   # Iac test
         uses: snyk/actions/iac@master
         continue-on-error: true
         with:
           file: week6/Infra
           args: --severity-threshold=medium --report --target-name=student-portal-infra  # action writes snyk.sarif itself
+
+      - name: Snyk Code test
+        continue-on-error: true
+        run: >-
+          snyk code test week6/student-portal-for-ECS
+          --severity-threshold=medium
+          --sarif-file-output=snyk-code.sarif
+          --report
+          --project-name=student-portal-code
 
       - name: Snyk monitor
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -68,3 +77,10 @@ jobs:
         with:
           sarif_file: snyk.sarif
           category: snyk-iac
+
+      - name: Upload Code results
+        if: always() && hashFiles('snyk-code.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: snyk-code.sarif
+          category: snyk-code
