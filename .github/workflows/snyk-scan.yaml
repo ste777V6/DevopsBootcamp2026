@@ -54,6 +54,7 @@ jobs:
           --sarif-file-output=snyk-code.sarif
           --report
           --project-name=student-portal-code
+          --org=ste777v6
 
       - name: Snyk monitor
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
