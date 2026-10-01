@@ -48,6 +48,7 @@ jobs:
         with:
           version: v0.74.0
           scan-type: 'config'
+          scanners: 'misconfig,secret'
           scan-ref: 'week6/Infra'
           trivyignores: 'week6/Infra/.trivyignore.yaml'
           severity: 'CRITICAL,HIGH'
