@@ -1,0 +1,70 @@
+name: Snyk Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+
+
+  snyk:
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+
+      - uses: actions/checkout@v5
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      
+      - name: Install dependencies
+        run: pip install -r week6/student-portal-for-ECS/requirements.txt
+
+      - uses: snyk/actions/setup@master
+      
+      - name: Snyk Open Source test
+        continue-on-error: true
+        run: >-
+          snyk test
+          --file=week6/student-portal-for-ECS/requirements.txt
+          --package-manager=pip
+          --severity-threshold=high
+          --sarif-file-output=snyk-oss.sarif
+
+      - name: Snyk IaC test
+        uses: snyk/actions/iac@master
+        continue-on-error: true
+        with:
+          file: week6/Infra
+          args: --severity-threshold=medium   # action writes snyk.sarif itself
+
+      - name: Snyk monitor
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: >-
+          snyk monitor
+          --file=week6/student-portal-for-ECS/requirements.txt
+          --package-manager=pip
+          --project-name=student-portal
+
+      - name: Upload OSS results
+        if: always() && hashFiles('snyk-oss.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: snyk-oss.sarif
+          category: snyk-oss
+
+      - name: Upload IaC results
+        if: always() && hashFiles('snyk.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: snyk.sarif
+          category: snyk-iac
