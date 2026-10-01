@@ -11,22 +11,33 @@ permissions:
   security-events: write
 
 jobs:
+
+
   snyk:
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
-      - uses: actions/checkout@v5
 
-      - name: Snyk Open Source test
-        uses: snyk/actions/python@master
-        continue-on-error: true
+      - uses: actions/checkout@v5
+      
+      - uses: actions/setup-python@v5
         with:
-          args: >-
-            --file=week6/student-portal-for-ECS/requirements.txt
-            --package-manager=pip
-            --severity-threshold=high
-            --sarif-file-output=snyk-oss.sarif
+          python-version: "3.12"
+      
+      - name: Install dependencies
+        run: pip install -r week6/student-portal-for-ECS/requirements.txt
+
+      - uses: snyk/actions/setup@master
+      
+      - name: Snyk Open Source test
+        continue-on-error: true
+        run: >-
+          snyk test
+          --file=week6/student-portal-for-ECS/requirements.txt
+          --package-manager=pip
+          --severity-threshold=high
+          --sarif-file-output=snyk-oss.sarif
 
       - name: Snyk IaC test
         uses: snyk/actions/iac@master
@@ -37,14 +48,12 @@ jobs:
 
       - name: Snyk monitor
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: snyk/actions/python@master
         continue-on-error: true
-        with:
-          command: monitor
-          args: >-
-            --file=week6/student-portal-for-ECS/requirements.txt
-            --package-manager=pip
-            --project-name=student-portal
+        run: >-
+          snyk monitor
+          --file=week6/student-portal-for-ECS/requirements.txt
+          --package-manager=pip
+          --project-name=student-portal
 
       - name: Upload OSS results
         if: always() && hashFiles('snyk-oss.sarif') != ''
