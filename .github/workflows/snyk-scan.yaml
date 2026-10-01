@@ -44,7 +44,7 @@ jobs:
         continue-on-error: true
         with:
           file: week6/Infra
-          args: --severity-threshold=medium   # action writes snyk.sarif itself
+          args: --severity-threshold=medium --report --target-name=student-portal-infra  # action writes snyk.sarif itself
 
       - name: Snyk monitor
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
