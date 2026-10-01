@@ -8,53 +8,54 @@ on:
 
 permissions:
   contents: read
-  security-events: write   # needed for SARIF upload
+  security-events: write
 
 jobs:
   snyk:
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      # Open source dependencies (pick the action matching your stack: node, python, golang, maven, docker, iac...)
       - name: Snyk Open Source test
         uses: snyk/actions/python@master
         continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high --sarif-file-output=snyk-oss.sarif
-          file: ./week6/student-portal-for-ECS/.
+          args: >-
+            --file=week6/student-portal-for-ECS/requirements.txt
+            --package-manager=pip
+            --severity-threshold=high
+            --sarif-file-output=snyk-oss.sarif
 
-      # Terraform / IaC misconfigurations
       - name: Snyk IaC test
         uses: snyk/actions/iac@master
         continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          file: ./week6/Infra
-          args: --severity-threshold=medium --sarif-file-output=snyk-iac.sarif
+          file: week6/Infra
+          args: --severity-threshold=medium   # action writes snyk.sarif itself
 
-      # Push a snapshot to the Snyk UI (this is what drives Slack alerts)
       - name: Snyk monitor
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: snyk/actions/python@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
         with:
           command: monitor
+          args: >-
+            --file=week6/student-portal-for-ECS/requirements.txt
+            --package-manager=pip
+            --project-name=student-portal
 
-      - name: Upload results to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
+      - name: Upload OSS results
+        if: always() && hashFiles('snyk-oss.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: snyk-oss.sarif
           category: snyk-oss
 
-      - name: Upload results to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
+      - name: Upload IaC results
+        if: always() && hashFiles('snyk.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: snyk-iac.sarif
+          sarif_file: snyk.sarif
           category: snyk-iac
