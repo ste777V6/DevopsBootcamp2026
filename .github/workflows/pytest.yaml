@@ -1,0 +1,33 @@
+name: pytest
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    
+env:
+    AWS_REGION: us-east-1
+    ECR_REPOSITORY: bootcamp2026-student-portal-ecr
+    ECR_REGISTRY_URI: 344707019777.dkr.ecr.us-east-1.amazonaws.com
+    IMAGE_TAG: ${{ github.sha }}
+    APP_PATH: week6/student-portal-for-ECS
+
+jobs:
+    
+  build-and-push:
+    name: Build and Test ECS Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+            
+      - name: Install dependencies
+        run: pip install -r week6/student-portal-for-ECS/requirements.txt
+
+      - name: Run tests
+        run: pytest
