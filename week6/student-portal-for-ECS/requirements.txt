@@ -6,3 +6,5 @@ psycopg2-binary==2.9.13
 #Adding vulnerable packages to test Snyk scan
 urllib3==1.24.1   # several high-severity CVEs
 PyJWT==1.5.0      # high: algorithm confusion / key handling
+#Adding pytest for testing
+pytest==7.4.2
