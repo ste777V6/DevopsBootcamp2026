@@ -30,4 +30,4 @@ jobs:
         run: pip install -r week6/student-portal-for-ECS/requirements.txt
 
       - name: Run tests
-        run: pytest
+        run: pytest ./week6/student-portal-for-ECS/tests
