@@ -101,7 +101,7 @@ jobs:
   #Job3: Trivy triage report
 
   triage-report:
-    name: Quality gate for container scan
+    name: Trivy triage report
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -112,7 +112,10 @@ jobs:
       uses: aquasecurity/trivy-action@v0.36.0
       with:
         skip-setup-trivy: true
-        scan-type: ...          # image / fs / config, as that pipeline already uses
+        scan-type: 'image'
+        scan-ref: 'week6'
+        scanners: 'vuln,secret,misconfig'
+        image-ref: ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
         format: 'json'
         output: 'trivy-image.json'
         exit-code: '0'

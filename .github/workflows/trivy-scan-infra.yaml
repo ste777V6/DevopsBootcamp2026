@@ -70,7 +70,10 @@ jobs:
       uses: aquasecurity/trivy-action@v0.36.0
       with:
         skip-setup-trivy: true
-        scan-type: ...          # image / fs / config, as that pipeline already uses
+        scan-type: 'config'
+        scanners: 'misconfig,secret'
+        scan-ref: 'week6/Infra'
+        severity: 'CRITICAL,HIGH'
         format: 'json'
         output: 'trivy-infra.json'
         exit-code: '0'
