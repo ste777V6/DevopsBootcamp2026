@@ -97,4 +97,30 @@ jobs:
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
           trivyignores: 'week6/student-portal-for-ECS/.trivyignore.yaml'
+  
+  #Job3: Trivy triage report
+
+  triage-report:
+    name: Quality gate for container scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
       
+    - name: Run Trivy for triage (JSON)
+      if: always()
+      uses: aquasecurity/trivy-action@v0.36.0
+      with:
+        skip-setup-trivy: true
+        scan-type: ...          # image / fs / config, as that pipeline already uses
+        format: 'json'
+        output: 'trivy-image.json'
+        exit-code: '0'
+
+    - name: Triage report
+      if: always()
+      uses: ./.github/actions/trivy-triage
+      with:
+        input: trivy-image.json
+        title: Trivy triage report - image
+        artifact-name: triage-image

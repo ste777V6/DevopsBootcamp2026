@@ -35,7 +35,7 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           version: v0.74.0
-          scanners: 'secret'
+          scanners: 'vuln,secret'
           scan-type: 'fs'
           scan-ref: 'week6'
           ignore-unfixed: true
@@ -73,3 +73,30 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
+  
+    #Job3: Trivy triage report
+
+  triage-report:
+    name: Trivy triage report
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      
+    - name: Run Trivy for triage (JSON)
+      if: always()
+      uses: aquasecurity/trivy-action@v0.36.0
+      with:
+        skip-setup-trivy: true
+        scan-type: ...          # image / fs / config, as that pipeline already uses
+        format: 'json'
+        output: 'trivy-repo.json'
+        exit-code: '0'
+
+    - name: Triage report
+      if: always()
+      uses: ./.github/actions/trivy-triage
+      with:
+        input: trivy-repo.json
+        title: Trivy triage report - repo
+        artifact-name: triage-repo

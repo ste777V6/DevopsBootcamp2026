@@ -55,3 +55,30 @@ jobs:
           exit-code: '1'
           format: table
           skip-setup-trivy: true
+
+  #Job2: Trivy triage report
+
+  triage-report:
+    name: Trivy triage report
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      
+    - name: Run Trivy for triage (JSON)
+      if: always()
+      uses: aquasecurity/trivy-action@v0.36.0
+      with:
+        skip-setup-trivy: true
+        scan-type: ...          # image / fs / config, as that pipeline already uses
+        format: 'json'
+        output: 'trivy-infra.json'
+        exit-code: '0'
+
+    - name: Triage report
+      if: always()
+      uses: ./.github/actions/trivy-triage
+      with:
+        input: trivy-infra.json
+        title: Trivy triage report - infra
+        artifact-name: triage-infra
