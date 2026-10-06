@@ -106,7 +106,10 @@ jobs:
     permissions:
       contents: read
     steps:
-      
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
     - name: Run Trivy for triage (JSON)
       if: always()
       uses: aquasecurity/trivy-action@v0.36.0

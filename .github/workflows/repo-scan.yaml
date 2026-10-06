@@ -82,24 +82,26 @@ jobs:
     permissions:
       contents: read
     steps:
-      
-    - name: Run Trivy for triage (JSON)
-      if: always()
-      uses: aquasecurity/trivy-action@v0.36.0
-      with:
-        version: v0.74.0
-        scan-type: 'fs'
-        format: 'json'
-        scan-ref: 'week6'
-        scanners: 'vuln,secret'
-        severity: 'CRITICAL,HIGH'
-        output: 'trivy-repo.json'
-        exit-code: '0'
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Triage report
-      if: always()
-      uses: ./.github/actions/trivy-triage
-      with:
-        input: trivy-repo.json
-        title: Trivy triage report - repo
-        artifact-name: triage-repo
+      - name: Run Trivy for triage (JSON)
+        if: always()
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          version: v0.74.0
+          scan-type: 'fs'
+          format: 'json'
+          scan-ref: 'week6'
+          scanners: 'vuln,secret'
+          severity: 'CRITICAL,HIGH'
+          output: 'trivy-repo.json'
+          exit-code: '0'
+
+      - name: Triage report
+        if: always()
+        uses: ./.github/actions/trivy-triage
+        with:
+          input: trivy-repo.json
+          title: Trivy triage report - repo
+          artifact-name: triage-repo
