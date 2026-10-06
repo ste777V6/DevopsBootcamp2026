@@ -111,7 +111,7 @@ jobs:
       if: always()
       uses: aquasecurity/trivy-action@v0.36.0
       with:
-        skip-setup-trivy: true
+        version: v0.74.0
         scan-type: 'image'
         scan-ref: 'week6'
         scanners: 'vuln,secret,misconfig'

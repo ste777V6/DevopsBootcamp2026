@@ -69,7 +69,7 @@ jobs:
       if: always()
       uses: aquasecurity/trivy-action@v0.36.0
       with:
-        skip-setup-trivy: true
+        version: v0.74.0
         scan-type: 'config'
         scanners: 'misconfig,secret'
         scan-ref: 'week6/Infra'
