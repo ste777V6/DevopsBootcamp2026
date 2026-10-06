@@ -110,6 +110,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
+    - name: Build Docker image
+      working-directory: ${{ env.APP_PATH }}
+      run: |
+         docker build -t ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} .
+  
+    - name: tag Docker image with ECR registry URI
+      run: |
+         docker tag ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} ${{ env.ECR_REGISTRY_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+    
     - name: Run Trivy for triage (JSON)
       if: always()
       uses: aquasecurity/trivy-action@v0.36.0
