@@ -33,6 +33,7 @@ jobs:
           scan-type: 'fs'
           ignore-unfixed: true
           format: 'sarif'
+          scan-ref: 'week6'
           output: 'trivy-repo.sarif'
           severity: 'CRITICAL'
           exit-code: '1'
